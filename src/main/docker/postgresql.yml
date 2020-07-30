@@ -1,0 +1,12 @@
+version: '2'
+services:
+  monoslacklikepaste-postgresql:
+    image: postgres:12.3
+    # volumes:
+    #     - ~/volumes/jhipster/monoslacklikepaste/postgresql/:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=monoslacklikepaste
+      - POSTGRES_PASSWORD=
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    ports:
+      - 5432:5432
