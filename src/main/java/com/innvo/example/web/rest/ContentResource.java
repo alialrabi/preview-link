@@ -1,6 +1,9 @@
 package com.innvo.example.web.rest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.innvo.example.domain.Content;
+import com.innvo.example.domain.FileDB;
 import com.innvo.example.repository.ContentRepository;
 import com.innvo.example.web.rest.errors.BadRequestAlertException;
 
@@ -14,12 +17,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -54,12 +60,17 @@ public class ContentResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/contents")
-    public ResponseEntity<Content> createContent(@Valid @RequestBody Content content) throws URISyntaxException {
+    public ResponseEntity<Content> createContent(@RequestParam("content") String content, @RequestParam("file")MultipartFile file) throws URISyntaxException, IOException {
+        Content contentParam = new ObjectMapper().readValue(content, Content.class);
         log.debug("REST request to save Content : {}", content);
-        if (content.getId() != null) {
+        if (contentParam.getId() != null) {
             throw new BadRequestAlertException("A new content cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Content result = contentRepository.save(content);
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        contentParam.setFilename(fileName);
+        contentParam.setType(file.getContentType());
+        contentParam.setFileupload(file.getBytes());
+        Content result = contentRepository.save(contentParam);
         return ResponseEntity.created(new URI("/api/contents/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -111,6 +122,15 @@ public class ContentResource {
         log.debug("REST request to get Content : {}", id);
         Optional<Content> content = contentRepository.findById(id);
         return ResponseUtil.wrapOrNotFound(content);
+    }
+
+    @GetMapping("/contents/files/{id}")
+    public ResponseEntity<byte[]> getFile(@PathVariable Long id){
+        log.debug("REST request to download file: {}", id);
+        Optional<Content> content = contentRepository.findById(id);
+        return ResponseEntity.ok()
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + content.get().getFilename() + "\"")
+            .body(content.get().getFileupload());
     }
 
     /**

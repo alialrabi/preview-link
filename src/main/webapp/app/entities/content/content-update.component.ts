@@ -6,7 +6,7 @@
 /* eslint-disable no-var */
 /* eslint-disable no-console */
 import { Component, OnInit, HostListener } from '@angular/core';
-import { HttpResponse, HttpClient } from '@angular/common/http';
+import { HttpResponse, HttpClient, HttpEventType } from '@angular/common/http';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -23,13 +23,23 @@ declare var $: any;
   templateUrl: './content-update.component.html',
 })
 export class ContentUpdateComponent implements OnInit {
+  message = '';
+  selectedFiles!: FileList;
+  currentFile!: File;
+  fileInfos!: any;
+  photo!: any;
+  isImageLoading!: boolean;
+  progress = 0;
   isSaving = false;
   link: any;
   previews?: IPreview[];
+  imageURL?: string;
   editForm = this.fb.group({
     id: [],
     name: [null, [Validators.required, Validators.maxLength(50)]],
     pastedlink: [null, [Validators.maxLength(10000)]],
+    avatar: [null],
+    fileUpload: [''],
   });
 
   constructor(
@@ -40,6 +50,7 @@ export class ContentUpdateComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.fileInfos = new Array();
     const myElement: HTMLElement | null = document.getElementById('box');
     if (myElement) {
       myElement.contentEditable = 'true';
@@ -48,6 +59,98 @@ export class ContentUpdateComponent implements OnInit {
     this.activatedRoute.data.subscribe(({ content }) => {
       this.updateForm(content);
     });
+    // this.contentService.getFiles().subscribe(
+    //   res => {
+    //     this.fileInfos.push(res);
+    //     console.log(this.fileInfos);
+    //   }
+    // );
+  }
+
+  // Image Preview
+  showPreview(event: any) {
+    this.currentFile = (event.target as HTMLInputElement).files?.[0]!;
+    // this.editForm.patchValue({
+    //   avatar: file
+    // })
+    // this.editForm.get('avatar').updateValueAndValidity();
+    // File preview
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imageURL = reader.result as string;
+    };
+    reader.readAsDataURL(this.currentFile);
+  }
+
+  selectFile(event: any) {
+    this.selectedFiles = event.target.files;
+  }
+
+  getFileUploaded(id: any) {
+    this.isImageLoading = true;
+    this.contentService.getFile(id).subscribe(
+      data => {
+        this.createImageFromBlob(data);
+        this.isImageLoading = false;
+      },
+      error => {
+        this.isImageLoading = false;
+      }
+    );
+  }
+
+  createImageFromBlob(image: Blob) {
+    const reader = new FileReader();
+    reader.addEventListener(
+      'load',
+      () => {
+        this.photo = reader.result;
+      },
+      false
+    );
+
+    if (image) {
+      if (image.type !== 'application/pdf') reader.readAsDataURL(image);
+    }
+  }
+
+  // downloadFile(){
+  //   const link = document.createElement('a');
+  //   link.setAttribute('target', '_blank');
+  //   link.setAttribute('href', 'http://localhost:9000/api/file/files/9792151a-183d-45da-9cd4-38fa8b1404dc');
+  //   link.setAttribute('download', 'file_name.pdf');
+  //   document.body.appendChild(link);
+  //   link.click();
+  //   link.remove();
+  // }
+
+  upload() {
+    this.progress = 0;
+    this.currentFile = this.selectedFiles.item(0)!;
+    this.contentService.upload(this.currentFile).subscribe(
+      res => {
+        if (res.type === HttpEventType.UploadProgress) {
+          this.progress = Math.round((100 * res.loaded) / res.total);
+          this.photo = res.body;
+          console.log('=============>', this.photo);
+          // this.getFileUploaded(res.body.id);
+          // this.createImageFromBlob(res.body.data);
+        } else if (res instanceof HttpResponse) {
+          this.message = res.body.message;
+          // this.getFileUploaded(res.body.id);
+          this.photo = res.body;
+          console.log('-------->', this.photo);
+          // this.createImageFromBlob(res.body.data);
+          // this.fileInfos.push(res.body);
+        }
+      },
+      err => {
+        this.progress = 0;
+        this.message = 'Could not upload the file!';
+        this.currentFile = undefined!;
+      }
+    );
+    this.selectedFiles = undefined!;
   }
 
   @HostListener('paste', ['$event'])
@@ -102,6 +205,11 @@ export class ContentUpdateComponent implements OnInit {
       name: content.name,
       pastedlink: content.pastedlink,
     });
+    if (content.pastedlink) {
+      if (this.isUrl(content.pastedlink)) {
+        this.getPreview(content.pastedlink);
+      }
+    }
   }
 
   previousState(): void {
@@ -114,7 +222,7 @@ export class ContentUpdateComponent implements OnInit {
     if (content.id !== undefined) {
       this.subscribeToSaveResponse(this.contentService.update(content));
     } else {
-      this.subscribeToSaveResponse(this.contentService.create(content));
+      this.subscribeToSaveResponse(this.contentService.create(content, this.currentFile));
     }
   }
 

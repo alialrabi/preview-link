@@ -28,7 +28,7 @@
                         </small>
                     </div>
                 </div>
-
+                <!--
                 <div class="form-group">
                     <label class="form-control-label"
                         for="field_pastedlink">Pastedlink Override</label>
@@ -61,13 +61,13 @@
                                                         'background-position': '-9999px',
                                                         'background-repeat': 'no-repeat'
                                                     }">
-    
+
                                                     <div _ngcontent-unu-c7="" class="image"
                                                         style="border-radius: 3px;margin-right: 0;">
                                                         <img _ngcontent-unu-c7="" alt="" [src]="[preview.image]"
                                                             style="max-height: 70px; height: 13vw; border-radius: 3px; vertical-align: middle;">
                                                     </div>
-    
+
                                                 </div>
                                                 <div _ngcontent-unu-c7="" class="col text-data"
                                                     style="padding: 6px 6px 4px 0;display: flex;flex-direction: column;align-items: flex-start;justify-content: flex-start;background-position: -9999px;background-repeat: no-repeat;">
@@ -76,20 +76,20 @@
                                                         <div _ngcontent-unu-c7="" class="site-name"
                                                             style="font-size: 12px;"> Link
                                                         </div>
-    
+
                                                     </div>
-    
+
                                                     <div _ngcontent-unu-c7="" class="title"
                                                         style="font-weight: 500; font-size: 14px;"> {{preview.title}}
                                                     </div>
-    
+
                                                     <div _ngcontent-unu-c7="" class="description"
                                                         style="margin-top: 4px; max-height: 40px; font-size: 12px; -webkit-filter: contrast(.8); filter: contrast(.8); overflow: hidden; text-overflow: ellipsis;">
                                                         {{preview.description}}</div>
-    
+
                                                     <div _ngcontent-unu-c7="" class="footer"
                                                         style="display: flex; flex-direction: row; align-items: center; margin-bottom: 4px; font-size: 12px; -webkit-filter: contrast(.7); filter: contrast(.7);">
-    
+
                                                     </div>
                                                 </div>
                                             </a>
@@ -100,7 +100,63 @@
                         </ng-container>
                     </div>
                 </div>
+-->
 
+                <div class="form-group">
+<!--                    <div *ngIf="currentFile" class="progress">-->
+<!--                        <div-->
+<!--                          class="progress-bar progress-bar-info progress-bar-striped"-->
+<!--                          role="progressbar"-->
+<!--                          attr.aria-valuenow="{{ progress }}"-->
+<!--                          aria-valuemin="0"-->
+<!--                          aria-valuemax="100"-->
+<!--                          [ngStyle]="{ width: progress + '%' }"-->
+<!--                        >-->
+<!--                          {{ progress }}%-->
+<!--                        </div>-->
+<!--                      </div>-->
+
+                      <label class="btn btn-default">
+                        <input type="file" (change)="showPreview($event)" />
+                      </label>
+
+<!--                      <button class="btn btn-success" [disabled]="!selectedFiles" (click)="upload()">-->
+<!--                        Upload-->
+<!--                      </button>-->
+
+                    <!-- Image Preview -->
+<!--                    <div class="imagePreview" *ngIf="imageURL && imageURL !== ''">-->
+<!--                        <img [src]="imageURL" [alt]="editForm.value.name">-->
+<!--                    </div>-->
+
+<!--                      <button class="btn btn-primary" style="margin-left: 10px" (click)="downloadFile()">View File</button>-->
+<!--                      <div class="alert alert-light" role="alert">{{ message }}</div>-->
+<!--                        <img *ngIf="photo" [src]="['data:'+ photo.type + ';base64,' + photo.data]">-->
+<!--                    <ng-template [ngIf]="[photo]">-->
+<!--                        <ng-template [ngIf]="photo">-->
+<!--                            <img [src]="photo" class="img-thumbnail" *ngIf="!isImageLoading;">-->
+<!--                        </ng-template>-->
+<!--                    </ng-template>-->
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+                        <div class="form-group" *ngIf="imageURL && imageURL !== ''">
+<!--                    <div class="popover fade bottom in" style="top: 34px; left: 155px; display: block;">-->
+                        <div class="arrow"></div>
+                        <h3 class="popover-title"><strong>Preview</strong>
+                            <button type="button" id="close-preview" style="font-size: initial;" class="close pull-right">x</button>
+                        </h3>
+                        <div class="popover-content imagePreview" >
+                            <img
+                                 [src]="imageURL"
+                                 style="width: 250px; height: 200px;">
+                        </div>
+<!--                    </div>-->
+                </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="monoslacklikepasteApp.content.pastedlink"
                         for="field_pastedlink">Pastedlink</label>
@@ -116,34 +172,6 @@
                         </small>
                     </div>
 
-
-                    <!-- start link preview  -->
-                    <!--
-                        <ng-container *ngIf="previews && previews.length > 0">
-                            <div *ngFor="let preview of previews; let i=index">
-                                <div class="ngx-link-preview-container">
-                                    <div class="og-link-preview">
-                                        <a class="row" [href]="[preview.url]" target="_blank">
-                                            <div class="col preview-image"
-                                                [ngStyle]="{'background-image' : 'url(&quot;'  + preview.image + '&quot;)'}">
-                                                <div class="image">
-                                                    <img alt="" [src]="[preview.image]">
-                                                </div>
-                                            </div>
-                                            <div class="col text-data">
-                                                <div class="header">
-                                                    <div class="site-name"> Link </div>
-                                                </div>
-                                                <div class="title"> {{preview.title}} </div>
-                                                <div class="description"> {{preview.description}} </div>
-                                                <div class="footer">
-                                                </div>
-                                            </div>
-                                        </a></div>
-                                </div>
-                            </div>
-                        </ng-container>
-                    -->
 
                     <ng-container *ngIf="previews && previews.length > 0">
                         <div *ngFor="let preview of previews; let i=index">
@@ -208,17 +236,17 @@
                 <!-- end link preview -->
 
             </div>
-    </div>
 
-    <div>
-        <button type="button" id="cancel-save" class="btn btn-secondary" (click)="previousState()">
-            <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
-        </button>
+            <div>
+                <button type="button" id="cancel-save" class="btn btn-secondary" (click)="previousState()">
+                    <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+                </button>
 
-        <button type="submit" id="save-entity" [disabled]="editForm.invalid || isSaving" class="btn btn-primary">
-            <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
-        </button>
+                <button type="submit" id="save-entity" [disabled]="editForm.invalid || isSaving"
+                    class="btn btn-primary">
+                    <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+                </button>
+            </div>
+        </form>
     </div>
-    </form>
-</div>
 </div>

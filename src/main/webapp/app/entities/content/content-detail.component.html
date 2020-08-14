@@ -12,10 +12,99 @@
                 <dd>
                     <span>{{ content.name }}</span>
                 </dd>
+                <dd>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-xs-12 col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+                                <div class="form-group" *ngIf="content">
+                                    <!--                    <div class="popover fade bottom in" style="top: 34px; left: 155px; display: block;">-->
+                                    <div class="arrow"></div>
+                                    <h3 class="popover-title"><strong>Preview</strong>
+                                        <button type="button" id="close-preview"
+                                                style="font-size: initial;"
+                                                class="close pull-left" (click)="downloadFile()">
+                                            <svg width="2em" height="3em" viewBox="0 0 16 16" class="bi bi-cloud-download" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd" d="M4.406 1.342A5.53 5.53 0 0 1 8 0c2.69 0 4.923 2 5.166 4.579C14.758 4.804 16 6.137 16 7.773 16 9.569 14.502 11 12.687 11H10a.5.5 0 0 1 0-1h2.688C13.979 10 15 8.988 15 7.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 2.825 10.328 1 8 1a4.53 4.53 0 0 0-2.941 1.1c-.757.652-1.153 1.438-1.153 2.055v.448l-.445.049C2.064 4.805 1 5.952 1 7.318 1 8.785 2.23 10 3.781 10H6a.5.5 0 0 1 0 1H3.781C1.708 11 0 9.366 0 7.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383z"/>
+                                                <path fill-rule="evenodd" d="M7.646 15.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 14.293V5.5a.5.5 0 0 0-1 0v8.793l-2.146-2.147a.5.5 0 0 0-.708.708l3 3z"/>
+                                            </svg>
+                                        </button>
+                                    </h3>
+                                    <div class="popover-content imagePreview" >
+                                        <img
+                                            [src]="['data:'+ content.type + ';base64,' + content?.fileupload]"
+                                            style="width: 250px; height: 200px;">
+                                    </div>
+                                    <!--                    </div>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </dd>
                 <dt><span jhiTranslate="monoslacklikepasteApp.content.pastedlink">Pastedlink</span></dt>
                 <dd>
                     <span>{{ content.pastedlink }}</span>
+                    <div class="form-group">
+                        <ng-container *ngIf="previews && previews.length > 0">
+
+                            <div *ngFor="let preview of previews; let i=index">
+                                <div class="row" style="width: 40rem;margin-left: inherit;">
+                                    <div _ngcontent-unu-c7="" class="ngx-link-preview-container"
+                                         style="margin-bottom: 6px;">
+                                        <div _ngcontent-unu-c7="" class="og-link-preview"
+                                             style="border-radius: 4px; background-color: hsla(0,0%,78.4%,.25);">
+                                            <a _ngcontent-unu-c7="" [href]="[preview.url]" target="_blank" class="row"
+                                               style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start; text-decoration: none; color: unset; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;">
+                                                <div _ngcontent-unu-c7="" class="col preview-image" [ngStyle]="{
+                                                    'background-image': 'url(&quot;'  + preview?.image + '&quot;)',
+                                                    'padding': '5px 0 5px 20px',
+                                                    'margin-right': '-7rem',
+                                                    'display': 'flex',
+                                                    'flex-direction': 'column',
+                                                    'align-items': 'flex-start',
+                                                    'justify-content': 'flex-start',
+                                                    'background-position': '-9999px',
+                                                    'background-repeat': 'no-repeat'
+                                                }">
+
+                                                    <div _ngcontent-unu-c7="" class="image"
+                                                         style="border-radius: 3px;margin-right: 0;">
+                                                        <img _ngcontent-unu-c7="" alt="" [src]="[preview?.image]"
+                                                             style="max-height: 70px; height: 13vw; border-radius: 3px; vertical-align: middle;">
+                                                    </div>
+
+                                                </div>
+                                                <div _ngcontent-unu-c7="" class="col text-data"
+                                                     style="padding: 6px 6px 4px 0;display: flex;flex-direction: column;align-items: flex-start;justify-content: flex-start;background-position: -9999px;background-repeat: no-repeat;">
+                                                    <div _ngcontent-unu-c7="" class="header"
+                                                         style="display: flex; flex-direction: row; align-items: center; margin-bottom: 4px; font-size: 12px; -webkit-filter: contrast(.7); filter: contrast(.7);">
+                                                        <div _ngcontent-unu-c7="" class="site-name"
+                                                             style="font-size: 12px;"> Link
+                                                        </div>
+
+                                                    </div>
+
+                                                    <div _ngcontent-unu-c7="" class="title"
+                                                         style="font-weight: 500; font-size: 14px;"> {{preview.title}}
+                                                    </div>
+
+                                                    <div _ngcontent-unu-c7="" class="description"
+                                                         style="margin-top: 4px; max-height: 40px; font-size: 12px; -webkit-filter: contrast(.8); filter: contrast(.8); overflow: hidden; text-overflow: ellipsis;">
+                                                        {{preview.description}}</div>
+
+                                                    <div _ngcontent-unu-c7="" class="footer"
+                                                         style="display: flex; flex-direction: row; align-items: center; margin-bottom: 4px; font-size: 12px; -webkit-filter: contrast(.7); filter: contrast(.7);">
+
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
                 </dd>
+
             </dl>
 
             <button type="submit"
@@ -32,3 +121,6 @@
         </div>
     </div>
 </div>
+
+
+

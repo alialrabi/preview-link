@@ -6,7 +6,7 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
-    
+
     <!--
         Added the entity Content.
     -->
@@ -27,6 +27,23 @@
 
     <changeSet id="20200725230352-1-relations" author="jhipster">
 
+    </changeSet>
+    <changeSet id="add type and fileupload columns" author="jhipster">
+        <addColumn tableName="content">
+            <column name="type" type="varchar(3000)">
+                <constraints nullable="true" />
+            </column>
+            <column name="fileupload" type="blob">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="add fileName column" author="hipster">
+        <addColumn tableName="content">
+            <column name="fileName" type="varchar(300)">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
 

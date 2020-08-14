@@ -2,6 +2,8 @@
 import '../content/scss/vendor.scss';
 // import '../content/css/preview.scss';
 import '../content/js/jquery.min';
+// import '../content/js/upload.js';
+
 // import '../content/js/jquery.embedly-3.0.5.min';
 // import '../content/js/jquery.preview-0.3.2.min';
 import '../content/js/jquery.urlive.min';
